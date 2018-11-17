@@ -1,0 +1,2 @@
+# dgw
+DUO GUI Wallet
