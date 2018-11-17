@@ -1,0 +1,81 @@
+{{define "main"}}
+<div class="main">
+  <div class="index-page col-xs-12">
+    <div class="wallet col-xs-12 col-lg-6">
+      <h3>Node Balance</h3>
+      <br />
+      <strong data-toggle="tooltip" title="Qtum availabe to spend.">Available:</strong> 
+      <span class="pull-right">{{ .WalletInfo.Balance }}</span> <br />
+      <strong data-toggle="tooltip" title="Unconfirmed Qtum">Pending:</strong> <span class="pull-right">{{ .WalletInfo.UnconfirmedBalance }}</span> <br />
+      {{/* <strong data-toggle="tooltip" title="Qtum with less then 500 confirmations">Immature:</strong><span class="pull-right">{{ '%0.4f' | format(wallet_info.immature_coins) }}</span> <br /> */}}
+   
+    </div>
+    <div class="wallet-right col-xs-12 col-lg-6">
+      <h3>Node Status</h3> <br />
+      <strong>Wallet Version:</strong> <span class="pull-right"> {{ .WalletInfo.Info.WalletVersion }}</span> <br />
+      <strong>UI Version:</strong> <span class="pull-right"> {{ .WalletInfo.GUI }}</span> <br />
+
+      <strong>Connections:</strong> <span class="pull-right">{{ .WalletInfo.Info.Connections }} Nodes</span> <br />
+    </div>
+    <small id="current-address" class="col-xs-12">Deposit Address: {{ .WalletInfo.Address }}</small>
+  </div>
+  <div class="transactions-index col-xs-12">
+    <div class="wallet col-xs-12 col-lg-6">
+      <h3>Network Status</h3>
+      {{/* {{ if (ne .WalletInfo.Blocks .WalletInfo.Headers)}} */}}
+      {{ if (ne .WalletInfo.Info.Blocks .WalletInfo.BlockChainInfo.Headers)}}
+          <strong>Network:</strong><span class="blue-sm"> Syncing</span><br />
+      {{else if (gt .WalletInfo.Info.Connections 0)}}
+          <strong>Network:</strong><span class="green-sm"> Online</span><br />
+      {{ else }}
+        <strong>Network:</strong><span class="red-sm"> Offline</span><br />
+      {{end}}
+      <strong>Network:</strong><span class="red-sm"> Offline</span><br />
+        {{/* <strong>Blockchain:</strong>  {{ .WalletInfo.BlockChainInfo }} <br /> */}}
+        <strong>Last Block Time:</strong>{{ .WalletInfo.BestBlock.Header.Timestamp }} <br />
+        <strong>Current Block:</strong>  {{ .WalletInfo.Info.Blocks }} <br />
+        <strong>Total Sent:</strong> {{ .WalletInfo.GetNetTotals.TotalBytesSent }} MB  <br />
+        <strong>Total Received:</strong> {{ .WalletInfo.GetNetTotals.TotalBytesRecv }} MB <br />
+        <strong>TX in current block:</strong>  {{ .WalletInfo.PooledTxs }} <br />
+        <strong id="block-hash"> Bestblock Hash:<a href="https://explorer.parallelcoin.info/blockhash/{{ .WalletInfo.BestBlockHash }}" target="_blank">  {{ .WalletInfo.BestBlockHash }}</a></strong>
+    </div>
+       <div class="transactions-last col-xs-12 col-lg-6">
+         <h3>Recent Transactions</h3>
+         <table class="table table-striped">
+           <thead>
+             <tr>
+               <th class="text-center col-sm-3">Date</th>
+               <th class="text-center col-sm-1">Type</th>
+               <th class="text-center col-sm-2">Amount</th>
+               <th class="text-center col-sm-2">Confirmations</th>
+             </tr>
+           </thead>
+           {{.WalletInfo.TxList}}
+           {{/* <tbody>
+             {{ range .WalletInfo.TxsList }}
+             <tr>
+               <td align="left"> time.strftime('%B %d %Y %I:%M%p', time.localtime(tx.time)) }}</td>
+               <td align="center">
+                 {{ if tx.category == "receive" }}
+                   <span class="glyphicon glyphicon-download green"></span>
+                 {% elif tx.category == "send" %}
+                   <span class="glyphicon glyphicon-upload red"></span>
+                 {{ else }}
+                   <span class="glyphicon glyphicon-refresh blue"></span>
+                 {% endif %}
+               </td>
+                <td id="table_padding" align="center">{{ '%0.4f'| format(tx.amount) }}</td> 
+               {% if tx.blockhash == nill %}
+               <td id="table_padding" align="center">Orphan Block</td>
+               {{ else }}
+               <td id="table_padding" align="center"> tx.confirmations }}</td>
+             {{ end }}
+             </tr>
+             {{ end }}
+           </tbody> */}}
+         </table>
+         </div>
+       </div>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,37 @@
+{{define "main"}}
+
+<div class="main">
+  <div class="send_page col-xs-12">
+  <div class="send-total col-xs-12"><span class="pull-left">Send Coin</span><span class="pull-right">{{ .WalletInfo.Balance }} Coin</span></div>
+
+  <div class="transactions-send table-responsive col-xs-12">
+    <h3>Unspent Transactions</h3>
+    <table id="table-unspent" class="table table-striped">
+      <thead>
+        <tr>
+          <th class="text-center col-sm-6">Address</th>
+          <th class="text-center col-sm-2">Amount</th>
+          <th class="text-center col-sm-2">Confirmations</th>
+          <th class="text-center col-sm-2">Spendable</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .WalletInfo.Unspent }}
+        <tr>
+            <td align="center">{{ .Unspent.Address }}</td>
+            <td align="center">{{ .Unspent.Amount }}</td>
+            <td align="center">{{ .Unspent.Confirmations }}</td>
+          <td align="center">
+          {{ if .Unspent.Spendable }}
+              <span class="glyphicon glyphicon-ok green-unspent"></span>
+          {{ else }}
+              <span class="glyphicon glyphicon-remove red-unspent"></span>
+          {{ end }}
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,139 @@
+package rpc
+
+import (
+	"fmt"
+
+	"github.com/parallelcointeam/jorm/tools"
+)
+
+type Node struct {
+	RPCUser     string `json:"user"`
+	RPCPassword string `json:"pass"`
+	NodeIP      string `json:"ip"`
+	Port        int64  `json:"port"`
+}
+
+var _ JormNode = &Node{}
+
+type JormNode interface {
+	JNGetBlockCount() int
+	JNGetBlock(blockhash string) interface{}
+	JNGetBlockByHeight(blockheight int) interface{}
+	JNGetTx(txid string) interface{}
+	JNGetRawMemPool() interface{}
+	JNGetMiningInfo() interface{}
+	JNGetInfo() interface{}
+}
+
+func (node *Node) JNGetBlockCount() int {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []int{}
+	gbc, _ := jrc.MakeRequest("getblockcount", bparams)
+	getFBlC := gbc.(float64)
+	var getBlCount int = int(getFBlC)
+	return getBlCount
+}
+
+func (node *Node) JNGetBlock(blockhash string) interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []string{blockhash}
+	block, err := jrc.MakeRequest("getblock", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetblock", err)
+	}
+	return block
+}
+
+func (node *Node) JNGetBlockByHeight(blockheight int) interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	//bh, err := strconv.Atoi(blockheight)
+	//bparams := []int{bh}
+	bparams := []int{blockheight}
+	blockHash, err := jrc.MakeRequest("getblockhash", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetblock", err)
+	}
+	var block interface{}
+	if blockHash != nil {
+		block = node.JNGetBlock((blockHash).(string))
+	}
+	return block
+}
+func (node *Node) JNGetTx(txid string) interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	verbose := int(1)
+	var grtx []interface{}
+	grtx = append(grtx, txid)
+	grtx = append(grtx, verbose)
+	rtx, err := jrc.MakeRequest("getrawtransaction", grtx)
+	if err != nil {
+		fmt.Println("errerrerrttttttttttttttsaction", err)
+	}
+	// if rtx != nil {
+	// 	rawtx = rtx.(Tx)
+	// }
+	return rtx
+}
+
+func (node *Node) JNGetRawMemPool() interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []int{}
+	get, err := jrc.MakeRequest("getrawmempool", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetrawmempool", err)
+	}
+	return get
+}
+
+func (node *Node) JNGetMiningInfo() interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []int{}
+	get, err := jrc.MakeRequest("getmininginfo", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetmininginfo", err)
+	}
+	return get
+}
+
+func (node *Node) JNGetInfo() interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []int{}
+	get, err := jrc.MakeRequest("getinfo", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetinfo", err)
+	}
+	return get
+}
+func (node *Node) JNGetPeerInfo() interface{} {
+	jrc := tools.NewClient(node.RPCUser, node.RPCPassword, node.NodeIP, node.Port)
+	if jrc == nil {
+		fmt.Println("Error node status write")
+	}
+	bparams := []int{}
+	get, err := jrc.MakeRequest("getpeerinfo", bparams)
+	if err != nil {
+		fmt.Println("Nerrrgetinfo", err)
+	}
+	return get
+}
